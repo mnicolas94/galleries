@@ -8,7 +8,7 @@ import pickle
 
 from algorithms import IAlgorithm, IDescriptor, IDetector
 from galleries.igallery import IGallery
-from mnd_utils import files
+from galleries import files_utils
 
 
 class GalleryDataHandler:
@@ -40,10 +40,7 @@ class GalleryDataHandler:
 	def _get_data(self, algorithm: IAlgorithm, gallery: IGallery):
 		pass
 
-	def get_root(self):
-		return os.path.join(self.write_data_dir, self.relative_data_dir)
-
-	def is_algorithm_valid(self, algorithm: IAlgorithm):
+	def _is_algorithm_valid(self, algorithm: IAlgorithm):
 		return isinstance(algorithm, self._get_supported_algorithm_type())
 
 	def _get_algorithm_folder(self, algorithm: IAlgorithm):
@@ -154,7 +151,7 @@ class GalleryDataHandler:
 		:return: devuelve True si se guardó, False si el archivo ya existía.
 		"""
 		if not os.path.exists(file_path):
-			files.create_dir_of_file(file_path)
+			files_utils.create_dir_of_file(file_path)
 			file = open(file_path, 'wb')
 			try:
 				for d in data:
@@ -166,8 +163,11 @@ class GalleryDataHandler:
 				file.close()
 				raise RuntimeError('Un error ha ocurrido mientras se guardaban los datos.')
 
+	def get_root(self):
+		return os.path.join(self.write_data_dir, self.relative_data_dir)
+
 	def write_data(self, algorithm: IAlgorithm):
-		if self.is_algorithm_valid(algorithm):
+		if self._is_algorithm_valid(algorithm):
 			indices = self._read_index_list(algorithm)
 			self._add_algorithm_to_indices_if_not_exists(algorithm, indices)
 			file_path = self._get_data_file_path(algorithm, indices)
@@ -254,7 +254,7 @@ class GalleryFeaturesDataHandler(GalleryDataHandler):
 		return 'features'
 
 	def _get_data(self, algorithm: IAlgorithm, gallery: IGallery):
-		if self.is_algorithm_valid(algorithm):
+		if self._is_algorithm_valid(algorithm):
 			for img_path in self.gallery.get_paths():
 				img = cv.imread(img_path)
 				feats = algorithm.features(img)
@@ -270,7 +270,7 @@ class GalleryDetectionsDataHandler(GalleryDataHandler):
 		return 'detections'
 
 	def _get_data(self, algorithm: IAlgorithm, gallery: IGallery):
-		if self.is_algorithm_valid(algorithm):
+		if self._is_algorithm_valid(algorithm):
 			for img_path in self.gallery.get_paths():
 				img = cv.imread(img_path)
 				dets = algorithm.detect(img)

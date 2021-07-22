@@ -1,5 +1,5 @@
 from galleries.abstract_gallery import AbstractGallery
-from mnd_utils import files
+from galleries import files_utils
 
 
 class Gallery(AbstractGallery):
@@ -39,7 +39,7 @@ class Gallery(AbstractGallery):
 		self._annots_parser = value
 
 	def get_paths(self):
-		return files.list_images(self._directory, recursive=self._recursive)
+		return files_utils.list_images(self._directory, recursive=self._recursive)
 
 	def get_annotations_by_path(self, img_path):
 		return self._annots_parser(img_path)

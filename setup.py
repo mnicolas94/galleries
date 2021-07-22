@@ -52,7 +52,6 @@ if __name__ == '__main__':
             packages=['galleries'],
             install_requires=[
                 'algorithms',
-                'mnd_utils',
                 'opencv-python'
             ],
             classifiers=[

@@ -1,7 +1,7 @@
 import abc
 import pickle
 
-from mnd_utils import files
+from galleries import files_utils
 
 
 class IGallery(abc.ABC):
@@ -28,7 +28,7 @@ class IGallery(abc.ABC):
 
 	@staticmethod
 	def write_gallery(gallery: 'IGallery', file_path: str):
-		files.create_dir_of_file(file_path)
+		files_utils.create_dir_of_file(file_path)
 		file = open(file_path, 'wb')
 		pickle.dump(gallery, file)
 		file.close()
