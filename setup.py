@@ -51,7 +51,7 @@ if __name__ == '__main__':
             url="https://github.com/mnicolas94/***",
             packages=['galleries'],
             install_requires=[
-                'algorithms',
+                # 'algorithms',
                 'opencv-python'
             ],
             classifiers=[
