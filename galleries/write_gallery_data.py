@@ -1,6 +1,7 @@
 import abc
+import collections
 from collections import Generator
-from typing import Any, Tuple, Callable
+from typing import Any, Tuple
 
 import cv2 as cv
 import logging
@@ -259,20 +260,20 @@ class GalleryDataHandler:
 class GalleryGenericDataHandler(GalleryDataHandler):
 
 	def _get_supported_generator_type(self) -> type:
-		return Tuple[str, str, Callable]
+		return type((str, str, collections.Callable))  # this returns tuple which is not entirely correct
 
 	def _get_writer_folder_name(self) -> str:
 		return 'generic'
 
-	def _get_generator_folder_name(self, data_generator: Tuple[str, str, Callable]) -> str:
+	def _get_generator_folder_name(self, data_generator: Tuple[str, str, collections.Callable]) -> str:
 		folder_name, _, _ = data_generator
 		return folder_name
 
-	def _get_unique_id(self, data_generator: Tuple[str, str, Callable]) -> str:
+	def _get_unique_id(self, data_generator: Tuple[str, str, collections.Callable]) -> str:
 		_, unique_id, _ = data_generator
 		return unique_id
 
-	def _get_data(self, data_generator: Tuple[str, str, Callable], gallery: IGallery):
+	def _get_data(self, data_generator: Tuple[str, str, collections.Callable], gallery: IGallery):
 		_, _, data_generator_function = data_generator
 		for img_path in self.gallery.get_paths():
 			img = cv.imread(img_path)

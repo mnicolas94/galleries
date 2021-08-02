@@ -52,7 +52,8 @@ if __name__ == '__main__':
             packages=['galleries'],
             install_requires=[
                 # 'algorithms',
-                'opencv-python'
+                'opencv-python',
+                'numpy'
             ],
             classifiers=[
                 "Programming Language :: Python :: 3",

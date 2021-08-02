@@ -1,8 +1,14 @@
+import cv2 as cv
+from typing import Any
+
+import numpy as np
+
 from galleries.abstract_gallery import AbstractGallery
 from galleries import files_utils
 
 
 class Gallery(AbstractGallery):
+
 
 	def __init__(self, directory, annots_parser, recursive=False):
 		"""
@@ -44,3 +50,6 @@ class Gallery(AbstractGallery):
 	def get_annotations_by_path(self, img_path):
 		return self._annots_parser(img_path)
 
+	def get_image_by_index(self, index: Any) -> np.ndarray:
+		img_path: str = index
+		return cv.imread(img_path)

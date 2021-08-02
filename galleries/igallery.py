@@ -1,5 +1,7 @@
 import abc
+import numpy as np
 import pickle
+from typing import Any
 
 from galleries import files_utils
 
@@ -24,6 +26,10 @@ class IGallery(abc.ABC):
 		:param img_path:
 		:return:
 		"""
+		pass
+
+	@abc.abstractmethod
+	def get_image_by_index(self, index: Any) -> np.ndarray:
 		pass
 
 	@staticmethod
