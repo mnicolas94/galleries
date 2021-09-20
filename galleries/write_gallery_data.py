@@ -275,7 +275,7 @@ class GalleryGenericDataHandler(GalleryDataHandler):
 
 	def _get_data(self, data_generator: Tuple[str, str, collections.Callable], gallery: IGallery):
 		_, _, data_generator_function = data_generator
-		for img_path in self.gallery.get_paths():
+		for img_path in self.gallery.get_indices():
 			img = cv.imread(img_path)
 			feats = data_generator_function(img)
 			yield img_path, feats
