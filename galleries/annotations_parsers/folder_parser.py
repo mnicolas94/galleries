@@ -22,8 +22,8 @@ class FolderParser(GalleryAnnotationsParser):
 	{ 'label': 'Fulano', 'age': '32', 'sex': 'M', 'video': 'Video1' }
 	"""
 
-	def __init__(self, annot_names, sep='-'):
-		self.annot_names = annot_names
+	def __init__(self, annot_names=None, sep='-'):
+		self.annot_names = annot_names or []
 		self.sep = sep
 
 	def __call__(self, img_path: str) -> dict:

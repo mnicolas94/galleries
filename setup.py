@@ -49,7 +49,11 @@ if __name__ == '__main__':
             long_description=long_description,
             long_description_content_type="text/markdown",
             url="https://github.com/mnicolas94/***",
-            packages=['galleries', 'galleries.annotations_parsers'],
+            packages=[
+                'galleries',
+                'galleries.annotations_parsers',
+                'galleries.images_providers',
+            ],
             install_requires=[
                 # 'algorithms',
                 'opencv-python',
