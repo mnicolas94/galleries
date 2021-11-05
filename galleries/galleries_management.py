@@ -14,6 +14,13 @@ class GalleriesManagement:
         return GalleriesManagement._galleries_folder
 
     @staticmethod
+    def get_gallery_data_folder(gallery_name: str):
+        folder = os.path.join(GalleriesManagement._galleries_folder, f"{gallery_name}_data")
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        return folder
+
+    @staticmethod
     def set_galleries_folder(folder: str):
         GalleriesManagement._galleries_folder = folder
 
