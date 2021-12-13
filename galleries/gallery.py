@@ -8,9 +8,23 @@ from galleries.images_providers.gallery_images_provider import GalleryImagesProv
 
 class Gallery(IGallery):
 
-	def __init__(self, images_provider: GalleryImagesProvider, annots_parser: GalleryAnnotationsParser):
+	def __init__(
+			self,
+			name: str,
+			images_provider: GalleryImagesProvider,
+			annots_parser: GalleryAnnotationsParser
+	):
+		self._name = name
 		self._images_provider = images_provider
 		self._annots_parser = annots_parser
+
+	@property
+	def name(self):
+		return self._name
+
+	@name.setter
+	def name(self, value):
+		self._name = value
 
 	@property
 	def images_provider(self):
