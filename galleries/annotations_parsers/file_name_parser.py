@@ -48,3 +48,6 @@ class FileNameSepParser(GalleryAnnotationsParser):
 				token, string = string.split(separator, 1)
 				tokens.append(token)
 			return tokens
+
+	def get_discrete_annotations_values(self) -> Dict[str, list]:
+		return {}

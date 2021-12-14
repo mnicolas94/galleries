@@ -21,3 +21,12 @@ class GalleryAnnotationsParser(abc.ABC):
 		:return:
 		"""
 		pass
+
+	@abc.abstractmethod
+	def get_discrete_annotations_values(self) -> Dict[str, list]:
+		"""
+		Returns, for each annotation, a list of possible values. Only for annotations that have a finite
+		set of possible values.
+		:return:
+		"""
+		pass

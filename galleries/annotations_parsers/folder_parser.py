@@ -35,3 +35,6 @@ class FolderParser(GalleryAnnotationsParser):
 
 	def get_annotations_types(self) -> Optional[Dict[str, type]]:
 		return {annot_name: str for annot_name in self.annot_names}
+
+	def get_discrete_annotations_values(self) -> Dict[str, list]:
+		return {}
