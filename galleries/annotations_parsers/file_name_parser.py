@@ -1,4 +1,5 @@
 import os
+from typing import Optional, Dict
 
 from galleries.annotations_parsers.gallery_annots_parsers import GalleryAnnotationsParser
 
@@ -27,13 +28,15 @@ class FileNameSepParser(GalleryAnnotationsParser):
 		filename, _ = os.path.splitext(file)
 		tokens = self._split_tokens(filename)
 		annots = {}
-		annots.keys()
 		for i, token in enumerate(tokens):
 			if i == len(self.annot_names):
 				break
 			annot_name = self.annot_names[i]
 			annots[annot_name] = token
 		return annots
+
+	def get_annotations_types(self) -> Optional[Dict[str, type]]:
+		return {annot_name: str for annot_name in self.annot_names}
 
 	def _split_tokens(self, filename: str):
 		if len(self.sep) == 1:

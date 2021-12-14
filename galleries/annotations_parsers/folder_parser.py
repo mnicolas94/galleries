@@ -1,4 +1,5 @@
 import os
+from typing import Optional, Dict
 
 from galleries.annotations_parsers.gallery_annots_parsers import GalleryAnnotationsParser
 
@@ -30,14 +31,7 @@ class FolderParser(GalleryAnnotationsParser):
 		return self.get_annotations_by_image_index(img_path)
 
 	def get_annotations_by_image_index(self, img_index: str) -> dict:
-		_, file = os.path.split(img_index)
-		filename, _ = os.path.splitext(file)
-		tokens = filename.split(sep=self.sep)
-		annots = {}
-		annots.keys()
-		for i, token in enumerate(tokens):
-			if i == len(self.annot_names):
-				break
-			annot_name = self.annot_names[i]
-			annots[annot_name] = token
-		return annots
+		raise NotImplementedError
+
+	def get_annotations_types(self) -> Optional[Dict[str, type]]:
+		return {annot_name: str for annot_name in self.annot_names}
