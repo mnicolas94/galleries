@@ -56,8 +56,9 @@ if __name__ == '__main__':
             ],
             install_requires=[
                 # 'algorithms',
+                'numpy',
                 'opencv-python',
-                'numpy'
+                'propsettings',
             ],
             classifiers=[
                 "Programming Language :: Python :: 3",

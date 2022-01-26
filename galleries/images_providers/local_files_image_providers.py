@@ -1,4 +1,6 @@
 import cv2 as cv
+from propsettings.configurable import register_as_setting
+from propsettings.setting_types.path_setting_type import Path
 
 from galleries import files_utils
 from galleries.images_providers.gallery_images_provider import GalleryImagesProvider
@@ -6,7 +8,7 @@ from galleries.images_providers.gallery_images_provider import GalleryImagesProv
 
 class LocalFilesImageProvider(GalleryImagesProvider):
 
-    def __init__(self,  directory, recursive=False):
+    def __init__(self,  directory="", recursive=False):
         self._directory = directory
         self._recursive = recursive
 
@@ -32,3 +34,7 @@ class LocalFilesImageProvider(GalleryImagesProvider):
     def get_image_by_index(self, img_index):
         img_path: str = img_index
         return cv.imread(img_path)
+
+
+register_as_setting(LocalFilesImageProvider, "_directory", setting_type=Path(True, []))
+register_as_setting(LocalFilesImageProvider, "_recursive")
