@@ -8,7 +8,6 @@ import os
 from pathlib import Path
 import pickle
 
-# from algorithms import IDescriptor, IDetector
 from galleries.igallery import IGallery
 from galleries import files_utils
 
@@ -278,45 +277,3 @@ class GalleryGenericDataHandler(GalleryDataHandler):
 			img = gallery.get_image_by_index(img_index)
 			feats = data_generator_function(img)
 			yield img_index, feats
-
-#
-# class GalleryFeaturesDataHandler(GalleryDataHandler):
-#
-# 	def _get_supported_generator_type(self) -> type:
-# 		return IDescriptor
-#
-# 	def _get_writer_folder_name(self) -> str:
-# 		return 'features'
-#
-# 	def _get_generator_folder_name(self, data_generator: IDescriptor) -> str:
-# 		return data_generator.get_name()
-#
-# 	def _get_unique_id(self, data_generator: IDescriptor) -> str:
-# 		return data_generator.configuration_string()
-#
-# 	def _get_data(self, descriptor: IDescriptor, gallery: IGallery):
-# 		for img_path in self.gallery.get_paths():
-# 			img = cv.imread(img_path)
-# 			feats = descriptor.features(img)
-# 			yield img_path, feats
-#
-#
-# class GalleryDetectionsDataHandler(GalleryDataHandler):
-#
-# 	def _get_supported_generator_type(self) -> type:
-# 		return IDetector
-#
-# 	def _get_writer_folder_name(self) -> str:
-# 		return 'detections'
-#
-# 	def _get_generator_folder_name(self, data_generator: IDetector) -> str:
-# 		return data_generator.get_name()
-#
-# 	def _get_unique_id(self, detector: IDetector) -> str:
-# 		return detector.configuration_string()
-#
-# 	def _get_data(self, detector: IDetector, gallery: IGallery):
-# 		for img_path in self.gallery.get_paths():
-# 			img = cv.imread(img_path)
-# 			dets = detector.detect(img)
-# 			yield img_path, dets
