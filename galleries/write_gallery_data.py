@@ -1,15 +1,13 @@
 import abc
 import collections
-from collections import Generator
 from typing import Any, Tuple
 
 import logging
 import os
 from pathlib import Path
-import pickle
 
+from galleries.collections.file_stream_dictionary import FileStreamDictionary, write_data
 from galleries.igallery import IGallery
-from galleries import files_utils
 
 
 class GalleryDataHandler:
@@ -17,9 +15,10 @@ class GalleryDataHandler:
 	SEP = ' '
 	EXT = '.pkl'
 
-	def __init__(self, gallery: IGallery, write_data_dir):
+	def __init__(self, gallery: IGallery, write_data_dir, stream_batch_size=50000):
 		self.gallery = gallery
 		self.write_data_dir = write_data_dir
+		self._stream_batch_size = stream_batch_size
 
 	@abc.abstractmethod
 	def _get_supported_generator_type(self) -> type:
@@ -153,27 +152,6 @@ class GalleryDataHandler:
 		data_file = self._get_data_file_path(data_generator, indices)
 		return data_file
 
-	def _write_data(self, data: Generator, file_path: str):
-		"""
-		Guardar datos a partir de un generador.
-		:param data:
-		:param file_path:
-		:return: devuelve True si se guardó, False si el archivo ya existía.
-		"""
-		if not os.path.exists(file_path):
-			files_utils.create_dir_of_file(file_path)
-			file = open(file_path, 'wb')
-			try:
-				for d in data:
-					pickle.dump(d, file)
-					file.flush()
-				file.close()
-				return True
-			except Exception as e:
-				file.close()
-				logging.error('Un error ha ocurrido mientras se guardaban los datos.')
-				raise e
-
 	def get_root(self):
 		return os.path.join(self.write_data_dir, self.relative_data_dir)
 
@@ -188,9 +166,8 @@ class GalleryDataHandler:
 			data = self._get_data(data_generator, self.gallery)
 
 			try:
-				success = self._write_data(data, file_path)
-				if success:
-					self._write_indices(data_generator, indices)
+				write_data(data, file_path)
+				self._write_indices(data_generator, indices)
 			except Exception as e:
 				logging.error('Un error ha ocurrido mientras se guardaban los datos.')
 				raise e
@@ -209,15 +186,8 @@ class GalleryDataHandler:
 		indices = self._read_index_list(data_generator)
 		file_path = self._get_data_file_path(data_generator, indices)
 		if file_path is not None and os.path.exists(file_path):
-			file = open(file_path, "rb")
-			end_reached = False
-			while not end_reached:
-				try:
-					row_data = pickle.load(file)
-					yield row_data
-				except EOFError:
-					end_reached = True
-			file.close()
+			fsd = FileStreamDictionary(file_path, self._stream_batch_size)
+			return fsd
 		else:
 			raise IOError(f'No existen datos guardados para este generador: {str(data_generator)}')
 
