@@ -52,10 +52,12 @@ if __name__ == '__main__':
             packages=[
                 'galleries',
                 'galleries.annotations_parsers',
+                'galleries.collections',
                 'galleries.images_providers',
             ],
             install_requires=[
                 # 'algorithms',
+                'mnd_utils >= 0.1.7'
                 'numpy',
                 'opencv-python',
                 'propsettings',

@@ -169,9 +169,10 @@ class GalleryDataHandler:
 					file.flush()
 				file.close()
 				return True
-			except:
+			except Exception as e:
 				file.close()
-				raise RuntimeError('Un error ha ocurrido mientras se guardaban los datos.')
+				logging.error('Un error ha ocurrido mientras se guardaban los datos.')
+				raise e
 
 	def get_root(self):
 		return os.path.join(self.write_data_dir, self.relative_data_dir)
@@ -190,8 +191,9 @@ class GalleryDataHandler:
 				success = self._write_data(data, file_path)
 				if success:
 					self._write_indices(data_generator, indices)
-			except:
-				raise RuntimeError('Un error ha ocurrido mientras se guardaban los datos.')
+			except Exception as e:
+				logging.error('Un error ha ocurrido mientras se guardaban los datos.')
+				raise e
 		else:
 			supported_type = self._get_supported_generator_type()
 			msg = f'Tipo de dato incorrecto. El algoritmo debe ser de tipo {supported_type}.'

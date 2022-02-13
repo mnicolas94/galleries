@@ -1,5 +1,8 @@
 import numpy as np
-from typing import Any
+from typing import Any, Dict, Optional
+
+from galleries.images_providers.local_files_image_providers import LocalFilesImageProvider
+from propsettings.configurable import register_as_setting
 
 from galleries.annotations_parsers.gallery_annots_parsers import GalleryAnnotationsParser
 from galleries.igallery import IGallery
@@ -10,9 +13,9 @@ class Gallery(IGallery):
 
 	def __init__(
 			self,
-			name: str,
-			images_provider: GalleryImagesProvider,
-			annots_parser: GalleryAnnotationsParser
+			name: str = "",
+			images_provider: GalleryImagesProvider = LocalFilesImageProvider,
+			annots_parser: GalleryAnnotationsParser = None
 	):
 		self._name = name
 		self._images_provider = images_provider
@@ -42,11 +45,27 @@ class Gallery(IGallery):
 	def annotations_parser(self, value):
 		self._annots_parser = value
 
+	def get_name(self) -> str:
+		return self._name
+
 	def get_indices(self):
 		return self._images_provider.get_indices()
+
+	def get_image_by_index(self, index: Any) -> np.ndarray:
+		return self._images_provider.get_image_by_index(index)
 
 	def get_annotations_by_index(self, img_index):
 		return self._annots_parser.get_annotations_by_image_index(img_index)
 
-	def get_image_by_index(self, index: Any) -> np.ndarray:
-		return self._images_provider.get_image_by_index(index)
+	def get_annotations_types(self) -> Optional[Dict[str, type]]:
+		return self._annots_parser.get_annotations_types()
+
+	def get_discrete_annotations_values(self) -> Dict[str, list]:
+		return self._annots_parser.get_discrete_annotations_values()
+
+
+register_as_setting(Gallery, "_name")
+register_as_setting(Gallery, "_images_provider")
+register_as_setting(Gallery, "_annots_parser")
+
+
