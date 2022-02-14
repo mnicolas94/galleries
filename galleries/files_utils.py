@@ -40,3 +40,9 @@ def create_dir_of_file(file):
     directory, _ = os.path.split(file)
     if not os.path.exists(directory):
         os.makedirs(directory)
+
+
+def create_file_if_doesnt_exists(file_path: str):
+    create_dir_of_file(file_path)
+    if not os.path.exists(file_path):
+        open(file_path, "w").close()

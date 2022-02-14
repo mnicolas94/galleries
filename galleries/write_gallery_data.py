@@ -8,6 +8,7 @@ from pathlib import Path
 
 from galleries.collections.file_stream_dictionary import FileStreamDictionary, write_data
 from galleries.igallery import IGallery
+from galleries import files_utils
 
 
 class GalleryDataHandler:
@@ -115,10 +116,10 @@ class GalleryDataHandler:
 		"""
 		data_file = None
 		if len(indices) > 0:
-			data_generator_folder = self._get_generator_folder(data_generator)
 			unique_id = self._get_unique_id(data_generator)
 			for index, uid in indices:
 				if uid == unique_id:
+					data_generator_folder = self._get_generator_folder(data_generator)
 					data_file = os.path.join(data_generator_folder, f'{index}{self.EXT}')
 					break
 		return data_file
@@ -184,12 +185,12 @@ class GalleryDataHandler:
 		:return:
 		"""
 		indices = self._read_index_list(data_generator)
+		self._add_generator_to_indices_if_not_exists(data_generator, indices)
+		self._write_indices(data_generator, indices)
 		file_path = self._get_data_file_path(data_generator, indices)
-		if file_path is not None and os.path.exists(file_path):
-			fsd = FileStreamDictionary(file_path, self._stream_batch_size)
-			return fsd
-		else:
-			raise IOError(f'No existen datos guardados para este generador: {str(data_generator)}')
+		files_utils.create_file_if_doesnt_exists(file_path)
+		fsd = FileStreamDictionary(file_path, self._stream_batch_size)
+		return fsd
 
 	def remove_corrupted_data(self):
 		"""
