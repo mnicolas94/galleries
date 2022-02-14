@@ -21,6 +21,14 @@ class IGallery(abc.ABC):
 		pass
 
 	@abc.abstractmethod
+	def set_name(self, name: str):
+		"""
+		set the gallery's name
+		:return:
+		"""
+		pass
+
+	@abc.abstractmethod
 	def get_indices(self):
 		"""
 		Obtener los índices de las imágenes. Estos índices son utilizados después para obtener información de la imagen.
