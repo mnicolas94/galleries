@@ -188,7 +188,7 @@ class GalleryDataHandler:
 		self._add_generator_to_indices_if_not_exists(data_generator, indices)
 		self._write_indices(data_generator, indices)
 		file_path = self._get_data_file_path(data_generator, indices)
-		files_utils.create_file_if_doesnt_exists(file_path)
+		files_utils.create_file_if_doesnt_exist(file_path)
 		fsd = FileStreamDictionary(file_path, self._stream_batch_size)
 		return fsd
 

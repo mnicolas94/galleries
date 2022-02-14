@@ -42,7 +42,7 @@ def create_dir_of_file(file):
         os.makedirs(directory)
 
 
-def create_file_if_doesnt_exists(file_path: str):
+def create_file_if_doesnt_exist(file_path: str):
     create_dir_of_file(file_path)
     if not os.path.exists(file_path):
         open(file_path, "w").close()
