@@ -77,7 +77,11 @@ class FileStreamDictionary:
     def _load_next_batch(self):
         size = self._batch_size
         gen = self._circular_generator[:size]
-        self._current_batch = {index: value for index, value in gen}
+        self._current_batch = {}
+        for index, value in gen:
+            if index in self._current_batch:
+                break  # turned around
+            self._current_batch[index] = value
 
     def _append_pushed_data(self):
         # close
