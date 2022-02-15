@@ -92,6 +92,7 @@ class FileStreamDictionary:
         self._circular_generator = CircularGenerator(self._get_generator)
         self._all_loaded = False
         self._current_batch: dict = None
+        self._append_buffer.clear()
 
     def try_get_item(self, key) -> (Any, bool):
         try:
