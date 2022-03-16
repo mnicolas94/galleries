@@ -5,43 +5,14 @@ from typing import Any, Generator
 from galleries import files_utils
 from mnd_utils.datastructures.circular_generator import CircularGenerator
 
-
-def write_data(data: Generator, file_path: str, append=False):
-    """
-    Guardar datos a partir de un generador.
-    :param data:
-    :param file_path:
-    :param append:
-    :return: devuelve True si se guardó, False si el archivo ya existía.
-    """
-    if not os.path.exists(file_path):
-        files_utils.create_dir_of_file(file_path)
-    write_mode = "ab" if append else "wb"
-    file = open(file_path, write_mode)
-    try:
-        for d in data:
-            pickle.dump(d, file)
-        file.close()
-    finally:
-        file.close()
-
-
-def read_data_generator(file):
-    end_reached = False
-    while not end_reached:
-        try:
-            row_data = pickle.load(file)
-            yield row_data
-        except EOFError:
-            end_reached = True
-    file.close()
+from galleries.data_read_write import default_reader_writer
 
 
 class FileStreamDictionary:
 
-    def __init__(self, file_path, batch_size, append_buffer_size=100):
+    def __init__(self, file_path, batch_size, append_buffer_size=100, data_reader_writer=None):
         self._file_path = file_path
-        self._file = None
+        self._data_reader_writer = data_reader_writer or default_reader_writer()
         self._closed = False
         self._circular_generator = CircularGenerator(self._get_generator)
         self._all_loaded = False
@@ -63,8 +34,7 @@ class FileStreamDictionary:
         return self._closed
 
     def _get_generator(self):
-        self._file = open(self._file_path, "rb")
-        yield from read_data_generator(self._file)
+        yield from self._data_reader_writer.read_data(self._file_path)
 
     def _get_current_batch_dict(self):
         if self._current_batch is None:
@@ -85,12 +55,11 @@ class FileStreamDictionary:
 
     def _append_pushed_data(self):
         # close
-        if self._file is not None:
-            self._file.close()
+        self._data_reader_writer.release()
 
         # append data
         data = ((index, d) for index, d in self._append_buffer.items())
-        write_data(data, self._file_path, append=True)
+        self._data_reader_writer.write_data(data, self._file_path, append=True)
 
         # reset
         self._circular_generator = CircularGenerator(self._get_generator)
@@ -143,5 +112,4 @@ class FileStreamDictionary:
     def close(self):
         self._append_pushed_data()
         self._closed = True
-        if self._file is not None:
-            self._file.close()
+        self._data_reader_writer.release()

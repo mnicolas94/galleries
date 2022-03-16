@@ -53,6 +53,7 @@ if __name__ == '__main__':
                 'galleries',
                 'galleries.annotations_parsers',
                 'galleries.collections',
+                'galleries.data_read_write',
                 'galleries.images_providers',
             ],
             install_requires=[

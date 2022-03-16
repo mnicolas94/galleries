@@ -6,7 +6,8 @@ import logging
 import os
 from pathlib import Path
 
-from galleries.collections.file_stream_dictionary import FileStreamDictionary, write_data
+from galleries.collections.file_stream_dictionary import FileStreamDictionary
+from galleries.data_read_write import default_reader_writer
 from galleries.igallery import IGallery
 from galleries import files_utils
 
@@ -16,9 +17,10 @@ class GalleryDataHandler:
 	SEP = ' '
 	EXT = '.pkl'
 
-	def __init__(self, gallery: IGallery, write_data_dir, stream_batch_size=50000):
+	def __init__(self, gallery: IGallery, write_data_dir, stream_batch_size=50000, data_reader_writer=None):
 		self.gallery = gallery
 		self.write_data_dir = write_data_dir
+		self._data_reader_writer = data_reader_writer or default_reader_writer()
 		self._stream_batch_size = stream_batch_size
 
 	@abc.abstractmethod
@@ -167,7 +169,7 @@ class GalleryDataHandler:
 			data = self._get_data(data_generator, self.gallery)
 
 			try:
-				write_data(data, file_path)
+				self._data_reader_writer.write_data(data, file_path)
 				self._write_indices(data_generator, indices)
 			except Exception as e:
 				logging.error('Un error ha ocurrido mientras se guardaban los datos.')
@@ -189,7 +191,7 @@ class GalleryDataHandler:
 		self._write_indices(data_generator, indices)
 		file_path = self._get_data_file_path(data_generator, indices)
 		files_utils.create_file_if_doesnt_exist(file_path)
-		fsd = FileStreamDictionary(file_path, self._stream_batch_size)
+		fsd = FileStreamDictionary(file_path, self._stream_batch_size, data_reader_writer=self._data_reader_writer)
 		return fsd
 
 	def remove_corrupted_data(self):
