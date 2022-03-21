@@ -38,7 +38,7 @@ def create_dir_of_file(file):
     :return:
     """
     directory, _ = os.path.split(file)
-    if not os.path.exists(directory):
+    if not os.path.exists(directory) and directory != "":
         os.makedirs(directory)
 
 

@@ -3,6 +3,7 @@ import pickle
 import unittest
 
 from galleries.collections.file_stream_dictionary import FileStreamDictionary
+from galleries.data_read_write import default_reader_writer
 
 
 class FileStreamDictionaryTests(unittest.TestCase):
@@ -21,11 +22,10 @@ class FileStreamDictionaryTests(unittest.TestCase):
             os.remove(self.file_path)
 
     def _write_test_data(self):
-        file = open(self.file_path, "wb")
-        for k, v in self.test_data.items():
-            pickle.dump((k, v), file)
-            file.flush()
-        file.close()
+        default_rw = default_reader_writer()
+        data = self.test_data.items()
+        default_rw.write_data(data, self.file_path)
+        default_rw.release()
 
     def test_read_all_data(self):
         # arrange
