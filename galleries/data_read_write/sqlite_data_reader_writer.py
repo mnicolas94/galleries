@@ -47,6 +47,8 @@ class SqliteDataReaderWriter(IFileDataReaderWriter):
             data = cur.execute("SELECT * FROM Data")
             for d in data:
                 yield pickle.loads(d[0])
+        except:
+            pass
         finally:
             self.release()
 
