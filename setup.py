@@ -4,14 +4,6 @@ import subprocess
 import sys
 
 
-def should_build():
-    bash_command = "git log -1 --pretty=%B"
-    process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
-    output, error = process.communicate()
-    should = b"--dont_build" not in output
-    return should
-
-
 def get_last_version():
     bash_command = "git describe --tags --abbrev=0 --match v[0-9]*"
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
@@ -48,7 +40,6 @@ def push_new_version_as_tag(version):
 
 
 if __name__ == '__main__':
-    build = should_build()
     version = get_last_version()
     commit_has_tag = current_commit_has_tag()
     if not commit_has_tag:
@@ -57,7 +48,7 @@ if __name__ == '__main__':
     if sys.argv[1] == 'pushtag':
         if not commit_has_tag:
             push_new_version_as_tag(version)
-    elif build:
+    else:
         with open("README.md", "r") as fh:
             long_description = fh.read()
 
