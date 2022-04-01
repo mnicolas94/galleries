@@ -76,7 +76,7 @@ if __name__ == '__main__':
             packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
             install_requires=[
                 # 'algorithms',
-                'mnd_utils >= 0.1.7'
+                'mnd_utils>=0.1.7'
                 'numpy',
                 'opencv-python',
                 'propsettings',
