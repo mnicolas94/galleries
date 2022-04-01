@@ -80,3 +80,13 @@ comparison_type_functions = {
     ComparisonType.LESS_EQUAL: less_equal_func,
     ComparisonType.CONTAINS: contains_func,
 }
+
+
+comparison_type_to_sql_operator = {
+    ComparisonType.EQUAL: "==",
+    ComparisonType.NOTEQUAL: "==",
+    ComparisonType.LESS: "<",
+    ComparisonType.GREATER: ">",
+    ComparisonType.GREATER_EQUAL: ">=",
+    ComparisonType.LESS_EQUAL: "<=",
+}

@@ -5,14 +5,46 @@ from galleries.annotations_filtering import ComparisonType
 
 class FilterStatement:
 
-    def __init__(self, annotation_key: str, comparison_type: ComparisonType, value: Any, is_negated: bool):
+    def __init__(self, annotation_key: str, comparison_type: ComparisonType, annotation_value: Any, is_negated: bool):
         self._annotation_key = annotation_key
         self._comparison_type = comparison_type
-        self._value = value
+        self._annotation_value = annotation_value
         self._is_negated = is_negated
 
     def __iter__(self):
-        return iter([self._annotation_key, self._comparison_type, self._value, self._is_negated])
+        return iter([self._annotation_key, self._comparison_type, self._annotation_value, self._is_negated])
+
+    @property
+    def annotation_key(self):
+        return self._annotation_key
+
+    @annotation_key.setter
+    def annotation_key(self, value):
+        self._annotation_key = value
+
+    @property
+    def annotation_value(self):
+        return self._annotation_value
+
+    @annotation_value.setter
+    def annotation_value(self, value):
+        self._annotation_value = value
+
+    @property
+    def comparison_type(self):
+        return self._comparison_type
+
+    @comparison_type.setter
+    def comparison_type(self, value):
+        self._comparison_type = value
+
+    @property
+    def is_negated(self):
+        return self._is_negated
+
+    @is_negated.setter
+    def is_negated(self, value):
+        self._is_negated = value
 
 
 if __name__ == '__main__':
