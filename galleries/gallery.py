@@ -1,9 +1,10 @@
 import numpy as np
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
+from galleries.annotations_filtering.filter import FilterStatement
+from galleries.annotations_filtering.utils import does_annotations_meets_filter
 from galleries.annotations_parsers.file_name_parser import FileNameSepParser
 from galleries.images_providers.local_files_image_providers import LocalFilesImageProvider
-from propsettings.configurable import register_as_setting
 
 from galleries.annotations_parsers.gallery_annots_parsers import GalleryAnnotationsParser
 from galleries.igallery import IGallery
@@ -44,8 +45,14 @@ class Gallery(IGallery):
 	def set_name(self, name: str):
 		self._name = name
 
-	def get_indices(self):
-		return self._images_provider.get_indices()
+	def get_indices(self, filters: List[List[FilterStatement]] = None):
+		indices = self._images_provider.get_indices()
+		filters = filters or []
+		for index in indices:
+			annotations = self.get_annotations_by_index(index)
+			meets_filter = does_annotations_meets_filter(annotations, filters)
+			if meets_filter:
+				yield index
 
 	def get_image_by_index(self, index: Any) -> np.ndarray:
 		return self._images_provider.get_image_by_index(index)

@@ -1,4 +1,5 @@
 import setuptools
+from setuptools import find_packages
 import subprocess
 import sys
 
@@ -49,13 +50,7 @@ if __name__ == '__main__':
             long_description=long_description,
             long_description_content_type="text/markdown",
             url="https://github.com/mnicolas94/***",
-            packages=[
-                'galleries',
-                'galleries.annotations_parsers',
-                'galleries.collections',
-                'galleries.data_read_write',
-                'galleries.images_providers',
-            ],
+            packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
             install_requires=[
                 # 'algorithms',
                 'mnd_utils >= 0.1.7'

@@ -2,9 +2,10 @@ import abc
 import cv2 as cv
 import numpy as np
 import pickle
-from typing import Any, Optional, Dict
+from typing import Any, Optional, Dict, List
 
 from galleries import files_utils
+from galleries.annotations_filtering.filter import FilterStatement
 
 
 class IGallery(abc.ABC):
@@ -29,7 +30,7 @@ class IGallery(abc.ABC):
 		pass
 
 	@abc.abstractmethod
-	def get_indices(self):
+	def get_indices(self, filters: List[List[FilterStatement]] = None):
 		"""
 		Obtener los índices de las imágenes. Estos índices son utilizados después para obtener información de la imagen.
 		Un índice puede ser, por ejemplo, la dirección de la imagen en el sistema de ficheros local.
@@ -73,16 +74,16 @@ class IGallery(abc.ABC):
 		"""
 		pass
 
-	def get_indices_annots(self):
-		for img_index in self.get_indices():
+	def get_indices_annots(self, filters: List[List[FilterStatement]] = None):
+		for img_index in self.get_indices(filters):
 			yield img_index, self.get_annotations_by_index(img_index)
 
-	def get_images(self):
-		for img_index in self.get_indices():
+	def get_images(self, filters: List[List[FilterStatement]] = None):
+		for img_index in self.get_indices(filters):
 			yield cv.imread(img_index)
 
-	def get_images_annots(self):
-		for img_index, annots in self.get_indices_annots():
+	def get_images_annots(self, filters: List[List[FilterStatement]] = None):
+		for img_index, annots in self.get_indices_annots(filters):
 			img = cv.imread(img_index)
 			yield img, annots
 
