@@ -35,7 +35,7 @@ jobs:
           fi
           echo "::set-output name=should::$should"
       - name: Build a binary wheel and a source tarball
-        if: ${{ steps.shouldbuild.outputs.should  == 'true' }}
+        if: ${{ steps.shouldbuild.outputs.should == 'true' }}
         run: >-
           python -m
           build
@@ -44,7 +44,7 @@ jobs:
           --outdir dist/
           .
       - name: Publish a Python distribution to PyPI
-        if: ${{ steps.shouldbuild.outputs.should  == 'true' }}
+        if: ${{ steps.shouldbuild.outputs.should == 'true' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
