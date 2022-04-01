@@ -44,11 +44,11 @@ class SqlDataRetriever:
         pass
 
     @abc.abstractmethod
-    def get_annotations_types(self, cursor) -> Optional[Dict[str, type]]:
+    def get_annotations_types(self) -> Optional[Dict[str, type]]:
         pass
 
     @abc.abstractmethod
-    def get_discrete_annotations_values(self, cursor) -> Dict[str, list]:
+    def get_discrete_annotations_values(self) -> Dict[str, list]:
         pass
 
 
@@ -99,12 +99,10 @@ class GallerySql(IGallery):
         return self._data_retriever.get_image_by_index(cur, index)
 
     def get_annotations_types(self) -> Optional[Dict[str, type]]:
-        cur = self._get_connection.cursor()
-        return self._data_retriever.get_annotations_types(cur)
+        return self._data_retriever.get_annotations_types()
 
     def get_discrete_annotations_values(self) -> Dict[str, list]:
-        cur = self._get_connection.cursor()
-        return self._data_retriever.get_discrete_annotations_values(cur)
+        return self._data_retriever.get_discrete_annotations_values()
 
     def _is_connected(self):
         return self._connection is not None
