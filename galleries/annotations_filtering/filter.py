@@ -5,14 +5,14 @@ from galleries.annotations_filtering import ComparisonType
 
 class FilterStatement:
 
-    def __init__(self, annotation_key: str, comparison_type: ComparisonType, annotation_value: Any, is_negated: bool):
+    def __init__(self, annotation_key: str, comparison_type: ComparisonType, filter_value: Any, is_negated: bool):
         self._annotation_key = annotation_key
         self._comparison_type = comparison_type
-        self._annotation_value = annotation_value
+        self._filter_value = filter_value
         self._is_negated = is_negated
 
     def __iter__(self):
-        return iter([self._annotation_key, self._comparison_type, self._annotation_value, self._is_negated])
+        return iter([self._annotation_key, self._comparison_type, self._filter_value, self._is_negated])
 
     @property
     def annotation_key(self):
@@ -23,12 +23,12 @@ class FilterStatement:
         self._annotation_key = value
 
     @property
-    def annotation_value(self):
-        return self._annotation_value
+    def filter_value(self):
+        return self._filter_value
 
-    @annotation_value.setter
-    def annotation_value(self, value):
-        self._annotation_value = value
+    @filter_value.setter
+    def filter_value(self, value):
+        self._filter_value = value
 
     @property
     def comparison_type(self):
