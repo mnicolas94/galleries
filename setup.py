@@ -4,6 +4,8 @@ import subprocess
 import sys
 
 
+# test
+
 def exists_version():
     bash_command = "git describe --tags --abbrev=0 --match v[0-9]*"
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
