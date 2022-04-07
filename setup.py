@@ -79,7 +79,7 @@ if __name__ == '__main__':
                 'mnd_utils>=0.1.7',
                 'numpy',
                 'opencv-python',
-                'propsettings',
+                'propsettings>=0.1.15',
             ],
             classifiers=[
                 "Programming Language :: Python :: 3",
