@@ -1,55 +1,14 @@
 import abc
-import sqlite3
 from sqlite3 import Connection
 from typing import Dict, Optional, Any, List
 
 import numpy as np
-from propsettings.configurable import register_as_setting
-from propsettings.setting_types.path_setting_type import Path
 
 from galleries.annotations_filtering.filter import FilterStatement
 from galleries.igallery import IGallery
-
-
-class GallerySqlConnector:
-
-    @abc.abstractmethod
-    def connect(self):
-        pass
-
-
-class SqliteConnector(GallerySqlConnector):
-
-    def __init__(self, database_path: str = ""):
-        self._database_path = database_path
-
-    def connect(self):
-        return sqlite3.connect(self._database_path)
-
-register_as_setting(SqliteConnector, "_database_path", setting_type=Path(False, []))
-
-
-class SqlDataRetriever:
-
-    @abc.abstractmethod
-    def get_indices(self, cursor, filters: List[List[FilterStatement]] = None):
-        pass
-
-    @abc.abstractmethod
-    def get_annotations_by_index(self, cursor, index: Any) -> dict:
-        pass
-
-    @abc.abstractmethod
-    def get_image_by_index(self, cursor, index: Any) -> np.ndarray:
-        pass
-
-    @abc.abstractmethod
-    def get_annotations_types(self) -> Optional[Dict[str, type]]:
-        pass
-
-    @abc.abstractmethod
-    def get_discrete_annotations_values(self) -> Dict[str, list]:
-        pass
+from galleries.sql.connectors import GallerySqlConnector
+from galleries.sql.connectors.sqlite_connector import SqliteConnector
+from galleries.sql.queries import SqlDataRetriever
 
 
 class GallerySql(IGallery):
