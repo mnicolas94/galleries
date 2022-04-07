@@ -7,7 +7,7 @@ from galleries.sql.connectors import GallerySqlConnector
 
 class OracleConnector(GallerySqlConnector):
 
-    def __init__(self, username: str, password: str, dsn: str, port: int, encoding='UTF-8'):
+    def __init__(self, username: str = "", password: str = "", dsn: str = "", port: int = 1512, encoding='UTF-8'):
         self._username = username
         self._password = password
         self._dsn = dsn
