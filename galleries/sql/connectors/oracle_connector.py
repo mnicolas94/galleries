@@ -23,8 +23,8 @@ class OracleConnector(GallerySqlConnector):
         return connection
 
 
-register_as_setting(OracleConnector, "_username", setting_value_type=str)
-register_as_setting(OracleConnector, "_password", setting_value_type=str, setting_type=Password())
-register_as_setting(OracleConnector, "_dsn", setting_value_type=str)
-register_as_setting(OracleConnector, "_port", setting_value_type=int)
-register_as_setting(OracleConnector, "_encoding", setting_value_type=str)
+register_as_setting(OracleConnector, "_username", setting_value_type=str, sort_order=0)
+register_as_setting(OracleConnector, "_password", setting_value_type=str, setting_type=Password(), sort_order=1)
+register_as_setting(OracleConnector, "_dsn", setting_value_type=str, sort_order=2)
+register_as_setting(OracleConnector, "_port", setting_value_type=int, sort_order=3)
+register_as_setting(OracleConnector, "_encoding", setting_value_type=str, sort_order=4)
