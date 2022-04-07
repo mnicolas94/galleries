@@ -75,7 +75,7 @@ if __name__ == '__main__':
             url="https://github.com/mnicolas94/***",
             packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
             install_requires=[
-                # 'algorithms',
+                'cx_Oracle',
                 'mnd_utils>=0.1.7',
                 'numpy',
                 'opencv-python',
