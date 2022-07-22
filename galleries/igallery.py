@@ -1,5 +1,4 @@
 import abc
-import cv2 as cv
 import numpy as np
 import pickle
 from typing import Any, Optional, Dict, List
@@ -80,11 +79,11 @@ class IGallery(abc.ABC):
 
 	def get_images(self, filters: List[List[FilterStatement]] = None):
 		for img_index in self.get_indices(filters):
-			yield cv.imread(img_index)
+			yield self.get_image_by_index(img_index)
 
 	def get_images_annots(self, filters: List[List[FilterStatement]] = None):
 		for img_index, annots in self.get_indices_annots(filters):
-			img = cv.imread(img_index)
+			img = self.get_image_by_index(img_index)
 			yield img, annots
 
 	@staticmethod
