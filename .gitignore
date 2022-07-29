@@ -130,3 +130,7 @@ dmypy.json
 
 # Jetbrains
 .idea/
+/classes_galleries.png
+/docs/vp_diagrams/Galleries.vpp
+/docs/vp_diagrams/Galleries.vpp~2
+/docs/vp_diagrams/Galleries.vpp~3
