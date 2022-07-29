@@ -1,7 +1,7 @@
 import enum
 
 
-class ComparisonType(enum.Enum):
+class ComparisonType(enum.Enum, str):
     EQUAL = 0
     NOTEQUAL = 1
     LESS = 2
