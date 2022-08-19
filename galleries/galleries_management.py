@@ -32,7 +32,7 @@ class GalleriesManagement:
                 file_path = os.path.join(subdir, filename)
                 if GalleriesManagement.is_file_gallery(file_path):
                     gallery_name, _ = os.path.splitext(filename)
-                    gallery = IGallery.read_gallery(file_path)
+                    gallery = IGallery.read_gallery(file_path, nice_format=True)
                     yield gallery_name, gallery
 
     @staticmethod
@@ -45,7 +45,7 @@ class GalleriesManagement:
     @staticmethod
     def save_gallery(gallery_name: str, gallery: Gallery):
         gallery_path = GalleriesManagement.get_gallery_file_path(gallery_name)
-        Gallery.write_gallery(gallery, gallery_path)
+        Gallery.write_gallery(gallery, gallery_path, nice_format=True)
 
     @staticmethod
     def remove_gallery_by_name(gallery_name: str):

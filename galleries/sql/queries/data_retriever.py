@@ -28,6 +28,33 @@ class SqlDataRetriever:
     def get_discrete_annotations_values(self) -> Dict[str, list]:
         pass
 
+    def get_indices_annots(self, cursor, filters: List[List[FilterStatement]] = None):
+        for img_index in self.get_indices(filters):
+            yield img_index, self.get_annotations_by_index(cursor, img_index)
+
+    def get_images(self, cursor, filters: List[List[FilterStatement]] = None):
+        for img_index in self.get_indices(filters):
+            yield self.get_image_by_index(cursor, img_index)
+
+    def get_images_annots(self, cursor, filters: List[List[FilterStatement]] = None):
+        for img_index, annots in self.get_indices_annots(filters):
+            img = self.get_image_by_index(cursor, img_index)
+            yield img, annots
+
+    def get_images_by_indices(self, cursor, indices: List[Any]):
+        for index in indices:
+            yield self.get_image_by_index(cursor, index)
+
+    def get_annotations_by_indices(self, cursor, indices: List[Any]):
+        for index in indices:
+            yield self.get_annotations_by_index(cursor, index)
+
+    def get_images_and_annotations_by_indices(self, cursor, indices: List[Any]):
+        for index in indices:
+            image = self.get_image_by_index(cursor, index)
+            annotations = self.get_annotations_by_index(cursor, index)
+            yield image, annotations
+
     @staticmethod
     def get_where_statement_from_filters(
             filters: List[List[FilterStatement]],

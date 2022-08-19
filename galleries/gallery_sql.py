@@ -63,6 +63,34 @@ class GallerySql(IGallery):
     def get_discrete_annotations_values(self) -> Dict[str, list]:
         return self._data_retriever.get_discrete_annotations_values()
 
+    # --- Overrides -----------------------------------------------------------
+
+    def get_indices_annots(self, filters: List[List[FilterStatement]] = None):
+        cur = self._get_connection.cursor()
+        return self._data_retriever.get_indices_annots(cur, filters)
+
+    def get_images(self, filters: List[List[FilterStatement]] = None):
+        cur = self._get_connection.cursor()
+        return self._data_retriever.get_images(cur, filters)
+
+    def get_images_annots(self, filters: List[List[FilterStatement]] = None):
+        cur = self._get_connection.cursor()
+        return self._data_retriever.get_images_annots(cur, filters)
+
+    def get_images_by_indices(self, indices: List[Any]):
+        cur = self._get_connection.cursor()
+        return self._data_retriever.get_images_by_indices(cur, indices)
+
+    def get_annotations_by_indices(self, indices: List[Any]):
+        cur = self._get_connection.cursor()
+        return self._data_retriever.get_annotations_by_indices(cur, indices)
+
+    def get_images_and_annotations_by_indices(self, indices: List[Any]):
+        cur = self._get_connection.cursor()
+        return self._data_retriever.get_images_and_annotations_by_indices(cur, indices)
+
+    # -------------------------------------------------------------------------
+
     def _is_connected(self):
         return self._connection is not None
 

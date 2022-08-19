@@ -1,4 +1,5 @@
 import abc
+import jsonpickle
 import numpy as np
 import pickle
 from typing import Any, Optional, Dict, List
@@ -86,16 +87,42 @@ class IGallery(abc.ABC):
 			img = self.get_image_by_index(img_index)
 			yield img, annots
 
-	@staticmethod
-	def write_gallery(gallery: 'IGallery', file_path: str):
-		files_utils.create_dir_of_file(file_path)
-		file = open(file_path, 'wb')
-		pickle.dump(gallery, file)
-		file.close()
+	def get_images_by_indices(self, indices: List[Any]):
+		for index in indices:
+			yield self.get_image_by_index(index)
+
+	def get_annotations_by_indices(self, indices: List[Any]):
+		for index in indices:
+			yield self.get_annotations_by_index(index)
+
+	def get_images_and_annotations_by_indices(self, indices: List[Any]):
+		for index in indices:
+			image = self.get_image_by_index(index)
+			annotations = self.get_annotations_by_index(index)
+			yield image, annotations
 
 	@staticmethod
-	def read_gallery(file_path: str) -> 'IGallery':
-		file = open(file_path, 'rb')
-		gallery = pickle.load(file)
-		file.close()
+	def write_gallery(gallery: 'IGallery', file_path: str, nice_format=False):
+		if nice_format:
+			serializer = jsonpickle
+			file_mode = 'w'
+		else:
+			serializer = pickle
+			file_mode = 'wb'
+		files_utils.create_dir_of_file(file_path)
+		with open(file_path, file_mode) as file:
+			data = serializer.dumps(gallery)
+			file.write(data)
+
+	@staticmethod
+	def read_gallery(file_path: str, nice_format=False) -> 'IGallery':
+		if nice_format:
+			serializer = jsonpickle
+			file_mode = 'r'
+		else:
+			serializer = pickle
+			file_mode = 'rb'
+		with open(file_path, file_mode) as file:
+			data = file.read()
+			gallery = serializer.loads(data)
 		return gallery

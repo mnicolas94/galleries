@@ -76,6 +76,7 @@ if __name__ == '__main__':
             packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
             install_requires=[
                 'cx_Oracle',
+                'jsonpickle',
                 'mnd_utils>=0.1.7',
                 'numpy',
                 'opencv-python',
