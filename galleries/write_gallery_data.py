@@ -1,6 +1,6 @@
 import abc
 import collections
-from typing import Any, Tuple
+from typing import Any, Tuple, Callable
 
 import logging
 import os
@@ -158,7 +158,7 @@ class GalleryDataHandler:
 	def get_root(self):
 		return os.path.join(self.write_data_dir, self.relative_data_dir)
 
-	def write_data(self, data_generator: Any):
+	def write_data(self, data_generator: Any, notify_function: Callable = None, notify_rate=100):
 		if self._is_generator_valid(data_generator):
 			indices = self._read_index_list(data_generator)
 			self._add_generator_to_indices_if_not_exists(data_generator, indices)
@@ -169,7 +169,7 @@ class GalleryDataHandler:
 			data = self._get_data(data_generator, self.gallery)
 
 			try:
-				self._data_reader_writer.write_data(data, file_path)
+				self._data_reader_writer.write_data(data, file_path, notify_function, notify_rate)
 				self._write_indices(data_generator, indices)
 			except Exception as e:
 				logging.error('Un error ha ocurrido mientras se guardaban los datos.')

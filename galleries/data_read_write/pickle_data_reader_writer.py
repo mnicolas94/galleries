@@ -25,14 +25,16 @@ class PickleDataReaderWriter(IFileDataReaderWriter):
         finally:
             self.release()
 
-    def write_data(self, data: Generator, file_path: str, append: bool = False):
+    def write_data(self, data: Generator, file_path: str, append: bool = False, notify_function=None, notify_rate=100):
         if not os.path.exists(file_path):
             files_utils.create_dir_of_file(file_path)
         write_mode = "ab" if append else "wb"
         file = open(file_path, write_mode)
         try:
-            for d in data:
+            def write(d):
                 pickle.dump(d, file)
+
+            self._write_data_with_notifications(data, write, notify_function, notify_rate)
         finally:
             file.close()
 

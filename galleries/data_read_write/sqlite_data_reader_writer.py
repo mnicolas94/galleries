@@ -52,7 +52,7 @@ class SqliteDataReaderWriter(IFileDataReaderWriter):
         finally:
             self.release()
 
-    def write_data(self, data: Generator, file_path: str, append: bool = False):
+    def write_data(self, data: Generator, file_path: str, append: bool = False, notify_function=None, notify_rate=100):
         self.release()
         exists = os.path.exists(file_path)
         if not exists:
@@ -73,9 +73,10 @@ class SqliteDataReaderWriter(IFileDataReaderWriter):
             if not append:
                 cur.execute("DELETE FROM Data")
 
-            for d in data:
+            def write(d):
                 bd = pickle.dumps(d)
                 cur.execute("INSERT INTO Data (data) VALUES(?)", [bd])
+            self._write_data_with_notifications(data, write, notify_function, notify_rate)
 
             self._connection.commit()
         finally:
