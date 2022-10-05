@@ -169,7 +169,7 @@ class GalleryDataHandler:
 			data = self._get_data(data_generator, self.gallery)
 
 			try:
-				self._data_reader_writer.write_data(data, file_path, notify_function, notify_rate)
+				self._data_reader_writer.write_data(data, file_path, notify_function=notify_function, notify_rate=notify_rate)
 				self._write_indices(data_generator, indices)
 			except Exception as e:
 				logging.error('Un error ha ocurrido mientras se guardaban los datos.')
