@@ -10,7 +10,7 @@ from galleries.data_read_write import default_reader_writer
 
 class FileStreamDictionary:
 
-    def __init__(self, file_path, batch_size, append_buffer_size=100, data_reader_writer=None):
+    def __init__(self, file_path, batch_size, append_buffer_size=5000, data_reader_writer=None):
         self._file_path = file_path
         self._data_reader_writer = data_reader_writer or default_reader_writer()
         self._closed = False
