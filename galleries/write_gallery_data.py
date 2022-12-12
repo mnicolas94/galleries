@@ -13,7 +13,6 @@ from galleries import files_utils
 
 
 class GalleryDataHandler:
-	relative_data_dir = '_gallery_data'
 	SEP = ' '
 	EXT = '.pkl'
 
@@ -23,49 +22,35 @@ class GalleryDataHandler:
 		self._data_reader_writer = data_reader_writer or default_reader_writer()
 		self._stream_batch_size = stream_batch_size
 
-	@abc.abstractmethod
 	def _get_supported_generator_type(self) -> type:
-		"""
-		Tipo de algoritmo que este writer soporta para guardar/leer datos.
-		:return:
-		"""
-		pass
+		return type((str, str, collections.Callable))  # this returns tuple which is not entirely correct
 
-	@abc.abstractmethod
-	def _get_writer_folder_name(self) -> str:
-		"""
-		Nombre de la carpeta donde se guardarán los datos de este writer.
-		:return:
-		"""
-		pass
+	def _get_generator_folder_name(self, data_generator: Tuple[str, str, collections.Callable]) -> str:
+		folder_name, _, _ = data_generator
+		return folder_name
 
-	@abc.abstractmethod
-	def _get_generator_folder_name(self, data_generator: Any) -> str:
-		pass
+	def _get_unique_id(self, data_generator: Tuple[str, str, collections.Callable]) -> str:
+		_, unique_id, _ = data_generator
+		return unique_id
 
-	@abc.abstractmethod
-	def _get_unique_id(self, data_generator: Any) -> str:
-		pass
+	def _get_data(self, data_generator: Tuple[str, str, collections.Callable], gallery: IGallery):
+		_, _, data_generator_function = data_generator
+		for img_index in self.gallery.get_indices():
+			img = gallery.get_image_by_index(img_index)
+			feats = data_generator_function(img)
+			yield img_index, feats
 
-	@abc.abstractmethod
-	def _get_data(self, data_generator: Any, gallery: IGallery):
-		pass
-
-	def _is_generator_valid(self, data_generator: Any):
-		return isinstance(data_generator, self._get_supported_generator_type())
-
-	def _get_generator_folder(self, data_generator: Any):
+	def _get_generator_folder(self, data_generator: Tuple[str, str, collections.Callable]):
 		"""
 		Devuelve el directorio donde se guardan los datos de un algoritmo.
 		:param data_generator: algoritmo del que se desean guardar los datos.
 		:return:
 		"""
-		writer_folder = self._get_writer_folder_name()
 		generator_folder = self._get_generator_folder_name(data_generator)
-		folder_dir = os.path.join(self.get_root(), writer_folder, generator_folder)
+		folder_dir = os.path.join(self.get_root(), generator_folder)
 		return folder_dir
 
-	def _get_index_file_dir(self, data_generator: Any):
+	def _get_index_file_dir(self, data_generator: Tuple[str, str, collections.Callable]):
 		"""
 		Devuelve la dirección del archivo donde se guardan, para cada posible configuración del algoritmo,
 		la dirección del fichero donde se guardaron sus datos.
@@ -76,7 +61,7 @@ class GalleryDataHandler:
 		file_path = os.path.join(folder, 'index.txt')
 		return file_path
 
-	def _read_index_list(self, data_generator: Any):
+	def _read_index_list(self, data_generator: Tuple[str, str, collections.Callable]):
 		"""
 		Devuelve lista con los índices de datos guardados de un algoritmo.
 		:param data_generator: algoritmo del que se desean guardar los datos.
@@ -93,7 +78,7 @@ class GalleryDataHandler:
 					indices.append((index, unique_id))
 		return indices
 
-	def _write_indices(self, data_generator: Any, indices):
+	def _write_indices(self, data_generator: Tuple[str, str, collections.Callable], indices):
 		"""
 		Escribe el fichero de índices con los índices dados. Si el fichero no existe, se crea.
 		Sobreescribe los índices que ya estuvieran guardados.
@@ -110,7 +95,7 @@ class GalleryDataHandler:
 			for index, conf in indices:
 				file.write(f'{index}{self.SEP}{conf}\n')
 
-	def _get_data_file_path(self, data_generator: Any, indices) -> str:
+	def _get_data_file_path(self, data_generator: Tuple[str, str, collections.Callable], indices) -> str:
 		"""
 		Devuelve la dirección del archivo donde se guardarán los datos de un algoritmo a partir de un índice.
 		:param data_generator: algoritmo del que se desean guardar los datos.
@@ -126,7 +111,7 @@ class GalleryDataHandler:
 					break
 		return data_file
 
-	def _add_generator_to_indices_if_not_exists(self, data_generator: Any, indices: list) -> bool:
+	def _add_generator_to_indices_if_not_exists(self, data_generator: Tuple[str, str, collections.Callable], indices: list) -> bool:
 		unique_id = self._get_unique_id(data_generator)
 		exists = False
 		max_index = -1
@@ -140,7 +125,7 @@ class GalleryDataHandler:
 			indices.append((max_index + 1, unique_id))
 		return not exists
 
-	def _add_generator_to_index_file(self, data_generator: Any):
+	def _add_generator_to_index_file(self, data_generator: Tuple[str, str, collections.Callable]):
 		"""
 		Añade un algoritmo al índice. Si el algoritmo existe ya, entonces no sucede nada.
 		Si el fichero índice no está creado entonces se crea. Además devuelve la dirección del fichero donde se
@@ -156,31 +141,25 @@ class GalleryDataHandler:
 		return data_file
 
 	def get_root(self):
-		return os.path.join(self.write_data_dir, self.relative_data_dir)
+		return self.write_data_dir
 
-	def write_data(self, data_generator: Any, notify_function: Callable = None, notify_rate=100):
-		if self._is_generator_valid(data_generator):
-			indices = self._read_index_list(data_generator)
-			self._add_generator_to_indices_if_not_exists(data_generator, indices)
-			file_path = self._get_data_file_path(data_generator, indices)
+	def write_data(self, data_generator: Tuple[str, str, collections.Callable], notify_function: Callable = None, notify_rate=100):
+		indices = self._read_index_list(data_generator)
+		self._add_generator_to_indices_if_not_exists(data_generator, indices)
+		file_path = self._get_data_file_path(data_generator, indices)
 
-			logging.info(f'Writing data with {data_generator} data_generator in {file_path}')
+		logging.info(f'Writing data with {data_generator} data_generator in {file_path}')
 
-			data = self._get_data(data_generator, self.gallery)
+		data = self._get_data(data_generator, self.gallery)
 
-			try:
-				self._data_reader_writer.write_data(data, file_path, notify_function=notify_function, notify_rate=notify_rate)
-				self._write_indices(data_generator, indices)
-			except Exception as e:
-				logging.error('Un error ha ocurrido mientras se guardaban los datos.')
-				raise e
-		else:
-			supported_type = self._get_supported_generator_type()
-			msg = f'Tipo de dato incorrecto. El algoritmo debe ser de tipo {supported_type}.'
-			logging.error(msg)
-			raise TypeError(msg)
+		try:
+			self._data_reader_writer.write_data(data, file_path, notify_function=notify_function, notify_rate=notify_rate)
+			self._write_indices(data_generator, indices)
+		except Exception as e:
+			logging.error('Un error ha ocurrido mientras se guardaban los datos.')
+			raise e
 
-	def read_data(self, data_generator: Any):
+	def read_data(self, data_generator: Tuple[str, str, collections.Callable]):
 		"""
 		Cargar datos guardados de un algoritmo.
 		:param data_generator:
@@ -202,12 +181,12 @@ class GalleryDataHandler:
 		# TODO implementar esto
 		pass
 
-	def exists_data(self, data_generator: Any):
+	def exists_data(self, data_generator: Tuple[str, str, collections.Callable]):
 		indices = self._read_index_list(data_generator)
 		file_path = self._get_data_file_path(data_generator, indices)
 		return file_path is not None and os.path.exists(file_path)
 
-	def remove_data(self, data_generator: Any):
+	def remove_data(self, data_generator: Tuple[str, str, collections.Callable]):
 		"""
 		Eliminar algoritmo del índice así como sus datos.
 		:param data_generator: algoritmo que se desea eliminar.
@@ -228,27 +207,3 @@ class GalleryDataHandler:
 			# quitar el algoritmo del índice
 			indices.pop(i)
 			self._write_indices(data_generator, indices)
-
-
-class GalleryGenericDataHandler(GalleryDataHandler):
-
-	def _get_supported_generator_type(self) -> type:
-		return type((str, str, collections.Callable))  # this returns tuple which is not entirely correct
-
-	def _get_writer_folder_name(self) -> str:
-		return 'generic'
-
-	def _get_generator_folder_name(self, data_generator: Tuple[str, str, collections.Callable]) -> str:
-		folder_name, _, _ = data_generator
-		return folder_name
-
-	def _get_unique_id(self, data_generator: Tuple[str, str, collections.Callable]) -> str:
-		_, unique_id, _ = data_generator
-		return unique_id
-
-	def _get_data(self, data_generator: Tuple[str, str, collections.Callable], gallery: IGallery):
-		_, _, data_generator_function = data_generator
-		for img_index in self.gallery.get_indices():
-			img = gallery.get_image_by_index(img_index)
-			feats = data_generator_function(img)
-			yield img_index, feats
