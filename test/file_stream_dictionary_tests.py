@@ -1,9 +1,8 @@
 import os
-import pickle
 import unittest
 
 from galleries.collections.file_stream_dictionary import FileStreamDictionary
-from galleries.data_read_write import default_reader_writer
+from galleries.data_read_write import PickleDataReaderWriter
 
 
 class FileStreamDictionaryTests(unittest.TestCase):
@@ -13,8 +12,9 @@ class FileStreamDictionaryTests(unittest.TestCase):
         self.batch_size = 5
         self.test_data_size = 100
         self.test_data = {k: str(k) for k in range(self.test_data_size)}
+        self.default_rw = PickleDataReaderWriter(None, "", self.file_path)
+        self.fsd = FileStreamDictionary(self.file_path, self.batch_size, data_reader_writer=self.default_rw)
         self._write_test_data()
-        self.fsd = FileStreamDictionary(self.file_path, self.batch_size)
 
     def tearDown(self) -> None:
         self.fsd.close()
@@ -22,10 +22,9 @@ class FileStreamDictionaryTests(unittest.TestCase):
             os.remove(self.file_path)
 
     def _write_test_data(self):
-        default_rw = default_reader_writer()
         data = self.test_data.items()
-        default_rw.write_data(data, self.file_path)
-        default_rw.release()
+        self.default_rw.write_data(data)
+        self.default_rw.release()
 
     def test_read_all_data(self):
         # arrange

@@ -2,7 +2,7 @@ import os
 import unittest
 
 from galleries.collections.stream_dictionary import StreamDictionary
-from galleries.data_read_write import default_reader_writer
+from galleries.data_read_write import PickleDataReaderWriter
 
 
 class StreamDictionaryTests(unittest.TestCase):
@@ -21,14 +21,14 @@ class StreamDictionaryTests(unittest.TestCase):
             os.remove(self.file_path)
 
     def _generator_provider(self):
-        return self.default_rw.read_data(self.file_path)
+        return self.default_rw.read_all_data()
 
     def _write_test_data(self):
-        self.default_rw = default_reader_writer()
+        self.default_rw = PickleDataReaderWriter(None, "", self.file_path)
         data = self.test_data.items()
-        self.default_rw.write_data(data, self.file_path)
+        self.default_rw.write_data(data)
         self.default_rw.release()
-        self.default_rw = default_reader_writer()
+        self.default_rw = PickleDataReaderWriter(None, "", self.file_path)
 
     def test_read_all_data(self):
         # arrange
