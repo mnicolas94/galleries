@@ -89,5 +89,5 @@ if __name__ == '__main__':
                 'Development Status :: 3 - Alpha',
                 'Intended Audience :: Developers',
             ],
-            python_requires='>=3.6',
+            python_requires='>=3.7',
         )
